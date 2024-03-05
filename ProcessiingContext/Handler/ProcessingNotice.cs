@@ -71,7 +71,10 @@ namespace ProcessiingContext.Handler
                     contextDesign.CopyMoveChangesAsync(dictLinks);
 
                     modification.ModificationObject.StartUpdate();
-                    usingAreaObject.
+                    usingAreaObject.UsingAreaObject.StartUpdate();
+
+                    usingAreaObject.UsingAreaObject.EndUpdate("");
+                    modification.ModificationObject.EndUpdate("");
                 }
             }
         }
