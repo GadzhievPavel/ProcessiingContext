@@ -7,13 +7,30 @@ using TFlex.DOCs.Model.References;
 
 namespace ProcessiingContext.Model
 {
+    /// <summary>
+    /// Класс представляющий объект типа "Область применения"
+    /// </summary>
     public class UsingArea
     {
+
+        private ReferenceObject usingAreaObject;
         private List<MatchConnection> matches;
+        /// <summary>
+        /// Список объектов типа "Соответствия подключений"
+        /// </summary>
         public List<MatchConnection> Matches
         {
             get { return matches; }
-            set { matches = value; }
+            //set { matches = value; }
+        }
+
+        /// <summary>
+        /// Возвращает ссылку на область объект области применения
+        /// </summary>
+        public ReferenceObject UsingAreaObject
+        {
+            get { return usingAreaObject; }
+            //set { this.usingAreaObject = value; }
         }
 
         public UsingArea(List<MatchConnection> matches)

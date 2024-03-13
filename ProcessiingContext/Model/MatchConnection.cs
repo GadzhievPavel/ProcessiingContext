@@ -20,31 +20,31 @@ namespace ProcessiingContext.Model
         public ReferenceObject Match
         {
             get { return match; }
-            set { match = value; }
+            //set { match = value; }
         }
 
         public NomenclatureObject Nomenclature
         {
             get { return nomenclature; }
-            set { nomenclature = value; }
+            //set { nomenclature = value; }
         }
 
         public ComplexHierarchyLink SourceHierarhyLink
         {
             get { return sourceHierarhyLink; }
-            set { sourceHierarhyLink = value; }
+            //set { sourceHierarhyLink = value; }
         }
 
         public ComplexHierarchyLink AddHierarhyLink
         {
             get { return addHierarhyLink; }
-            set { addHierarhyLink = value; }
+            //set { addHierarhyLink = value; }
         }
 
         public ComplexHierarchyLink RemoveHierarhyLink
         {
             get { return removeHierarhyLink; }
-            set { removeHierarhyLink = value; }
+            //set { removeHierarhyLink = value; }
         }
 
         public MatchConnection(ReferenceObject nomenclature, ComplexHierarchyLink SourceHierarchyLink,

@@ -8,20 +8,30 @@ using TFlex.DOCs.Model.References;
 
 namespace ProcessiingContext
 {
+    /// <summary>
+    /// Представление объекта ИИ
+    /// </summary>
     public class Notice
     {
-        private ReferenceObject notice;
-        private List<Modification> modifications;
 
+        private ReferenceObject notice;
+
+        private List<Modification> modifications;
+        /// <summary>
+        /// Ссылка на объект ИИ в системе
+        /// </summary>
         public ReferenceObject NoticeObject
         {
             get { return notice; }
-            set { notice = value; }
+            //set { notice = value; }
         }
+        /// <summary>
+        /// Список объектов Изменений в ИИ
+        /// </summary>
         public List<Modification> Modifications
         {
             get { return modifications; }
-            set { modifications = value; }
+            //set { modifications = value; }
         }
 
         public Notice(ReferenceObject notice)
