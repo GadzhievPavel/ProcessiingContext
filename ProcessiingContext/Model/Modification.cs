@@ -48,12 +48,13 @@ namespace ProcessiingContext.Model
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine($"Изменение {modification} в контексте {designContext}:\n");
             foreach (var item in usingAreas)
             {
                 stringBuilder.Append(item.ToString());
                 stringBuilder.Append("\n");
             }
-            return modification.ToString() + "\n" + designContext.ToString() + "\n" + stringBuilder.ToString();
+            return stringBuilder.ToString();
         }
     }
 }

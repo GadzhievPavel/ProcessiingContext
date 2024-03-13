@@ -38,12 +38,13 @@ namespace ProcessiingContext
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.Append($"ИИ {notice}:\n");
             foreach (var item in modifications)
             {
                 stringBuilder.Append(item.ToString());
                 stringBuilder.Append('\n');
             }
-            return notice.ToString() + "\n" + stringBuilder.ToString();
+            return stringBuilder.ToString();
         }
     }
 }

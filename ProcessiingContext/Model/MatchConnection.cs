@@ -66,7 +66,8 @@ namespace ProcessiingContext.Model
 
         public override string ToString()
         {
-            return nomenclature.ToString();
+            return $"Совпадение {match} номенклатура {nomenclature} исходное подключение {sourceHierarhyLink}" +
+                $" добавленное подключение {addHierarhyLink} удаляемое подключение {removeHierarhyLink}";
         }
     }
 }

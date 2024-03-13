@@ -31,7 +31,7 @@ namespace ProcessiingContext
 
         public ProcessingNoticeInDesignContext(ReferenceObject noticeReferenceObject)
         {
-            this.myNotice = new Notice(not);
+            //this.myNotice = new Notice(not);
         }
         public void MoveToContext(DesignContextObject targetDesignContext)
         {
@@ -44,7 +44,7 @@ namespace ProcessiingContext
 
                 using (notice.Reference.ChangeAndHoldConfigurationSettings(configSettings))
                 {
-                    MoveHierarchyLinks();
+                    //MoveHierarchyLinks();
                 }
             }
         }
@@ -112,29 +112,29 @@ namespace ProcessiingContext
         {
             foreach (var link in usingAreaLinksInContext)
             {
-                var matches =
+                //var matches =
             }
         }
 
-        private ReferenceObject FindMatchesByLinkInUsingAreaLinksInContext(ComplexHierarchyLink hierarchyLink, Guid linkGuid,
-            ReferenceObject usingAreaObject, DesignContextObject currentDesignContext)
-        {
-            var ConfigurationSettings = new ConfigurationSettings(connection)
-            {
-                DesignContext = currentDesignContext,
-                ApplyDesignContext = true,
-                Date = Texts.TodayText,
-                ApplyDate = true
-            };
+        //private ReferenceObject FindMatchesByLinkInUsingAreaLinksInContext(ComplexHierarchyLink hierarchyLink, Guid linkGuid,
+        //    ReferenceObject usingAreaObject, DesignContextObject currentDesignContext)
+        //{
+        //    var ConfigurationSettings = new ConfigurationSettings(connection)
+        //    {
+        //        DesignContext = currentDesignContext,
+        //        ApplyDesignContext = true,
+        //        Date = Texts.TodayText,
+        //        ApplyDate = true
+        //    };
 
-            ModificationReference modificationReference = new ModificationReference(connection);
-            ReferenceObject matches = null;
-            using (modificationReference.ChangeAndHoldConfigurationSettings(ConfigurationSettings))
-            {
-                usingAreaObject.Reload();
-                usingAreaObject.Refresh(usingAreaObject);
-                matches = usingAreaObject.GetObjects(ModificationUsingAreaReferenceObject.RelationKeys.HierarchyLinkMatches).Where(matche => matches.Links.ToOneToComplexHierarchy[])
-            }
-        }
+        //    ModificationReference modificationReference = new ModificationReference(connection);
+        //    ReferenceObject matches = null;
+        //    using (modificationReference.ChangeAndHoldConfigurationSettings(ConfigurationSettings))
+        //    {
+        //        usingAreaObject.Reload();
+        //        usingAreaObject.Refresh(usingAreaObject);
+        //        //matches = usingAreaObject.GetObjects(ModificationUsingAreaReferenceObject.RelationKeys.HierarchyLinkMatches).Where(matche => matches.Links.ToOneToComplexHierarchy[])
+        //    }
+        //}
     }
 }

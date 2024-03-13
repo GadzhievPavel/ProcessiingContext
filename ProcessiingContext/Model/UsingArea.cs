@@ -31,6 +31,7 @@ namespace ProcessiingContext.Model
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
+            stringBuilder.AppendLine("Область применения:\n");
             matches.ForEach(x => stringBuilder.Append(x.ToString()).AppendLine());
             return stringBuilder.ToString();
         }
