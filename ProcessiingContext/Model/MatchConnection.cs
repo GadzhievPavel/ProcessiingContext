@@ -56,12 +56,25 @@ namespace ProcessiingContext.Model
             this.removeHierarhyLink = RemoveHierarchyLink;
         }
 
-        public MatchConnection(ReferenceObject match)
+        public MatchConnection(ReferenceObject match, ConfigurationSettings configurationSettings)
         {
             this.nomenclature = match.GetObject(Guids.NotifyReference.Link.ObjectPDM) as NomenclatureObject;
-            this.sourceHierarhyLink = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.SourceHierarchyLink].LinkedComplexLink;
-            this.addHierarhyLink = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].LinkedComplexLink;
-            this.removeHierarhyLink = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].LinkedComplexLink;
+            var srcHierarchyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.SourceHierarchyLink];
+            using (srcHierarchyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            {
+                this.sourceHierarhyLink = srcHierarchyManager.LinkedComplexLink;
+            }
+            var addHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink];
+            using (addHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            {
+                this.addHierarhyLink = addHierarhyManager.LinkedComplexLink;
+            }
+            var removeHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink];
+            using(removeHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            {
+                this.removeHierarhyLink = removeHierarhyManager.LinkedComplexLink;
+            }
+            
         }
 
         public override string ToString()

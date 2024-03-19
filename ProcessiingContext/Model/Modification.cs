@@ -16,11 +16,17 @@ namespace ProcessiingContext.Model
     /// </summary>
     public class Modification
     {
-
+        /// <summary>
+        /// Изменение в DOCs
+        /// </summary>
         private ReferenceObject modification;
-
+        /// <summary>
+        /// контекст проектирования
+        /// </summary>
         private DesignContextObject designContext;
-
+        /// <summary>
+        /// Список областей применения
+        /// </summary>
         private List<UsingArea> usingAreas;
 
         private ConfigurationSettings currentConfiguration;
@@ -49,16 +55,21 @@ namespace ProcessiingContext.Model
             //set { usingAreas = value; }
         }
 
-        public Modification(ReferenceObject modification, ServerConnection connection)
+        private List<ComplexHierarchyLink> usingAreaLinksInContext;
+        /// <summary>
+        /// Создает представление изменения в DOCs в контексте, указанном в изменении modification
+        /// </summary>
+        /// <param name="modification">изменение в DOCs</param>
+        /// <param name="connection">подключение</param>
+        public Modification(ReferenceObject modification, ServerConnection connection, DesignContextObject designContext = null)
         {
             this.modification = modification;
-            this.designContext = modification.GetObject(ModificationReferenceObject.RelationKeys.DesignContext) as DesignContextObject;
-            this.usingAreas = new List<UsingArea>();
-            var list = modification.GetObjects(ModificationReferenceObject.RelationKeys.UsingArea);
-            foreach (var item in list)
+
+            if(designContext != null)
             {
-                this.usingAreas.Add(new UsingArea(item.GetObjects(Guids.NotifyReference.Link.MatchesConnection)));
+                this.designContext = modification.GetObject(ModificationReferenceObject.RelationKeys.DesignContext) as DesignContextObject;
             }
+
             this.currentConfiguration = new ConfigurationSettings(connection)
             {
                 DesignContext = this.designContext,
@@ -66,13 +77,33 @@ namespace ProcessiingContext.Model
                 Date = Texts.TodayText,
                 ApplyDate = true
             };
+
+            this.usingAreaLinksInContext = new List<ComplexHierarchyLink>();
+            this.usingAreas = new List<UsingArea>();
+            fillUsingArea(currentConfiguration);
+        }
+
+        private void fillUsingArea(ConfigurationSettings configurationSettings)
+        {
+            using (modification.Reference.ChangeAndHoldConfigurationSettings(currentConfiguration))
+            {
+                var usingAreaObjects = modification.GetObjects(ModificationReferenceObject.RelationKeys.UsingArea);
+                foreach (var itemUsingArea in usingAreaObjects)
+                {
+                    this.usingAreas.Add(new UsingArea(itemUsingArea.GetObjects(Guids.NotifyReference.Link.MatchesConnection),
+                        itemUsingArea, configurationSettings));
+                }
+            }
         }
 
         public void MoveHierarchyLinks()
         {
             foreach(var usingArea in  usingAreas)
             {
-
+                foreach(var match in usingArea.Matches)
+                {
+                    
+                }
             }
         }
 

@@ -19,7 +19,7 @@ namespace ProcessiingContext.Handler
         private ServerConnection connection;
         public ProcessingNotice(ReferenceObject _notice, ServerConnection connection)
         {
-            this.notice = new Notice(_notice);
+            this.notice = new Notice(_notice, connection);
             this.connection = connection;
         }
 

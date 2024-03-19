@@ -33,16 +33,17 @@ namespace ProcessiingContext.Model
             //set { this.usingAreaObject = value; }
         }
 
-        public UsingArea(List<MatchConnection> matches)
+        public UsingArea(List<MatchConnection> matches, ReferenceObject usingAreaObject)
         {
             this.matches = matches;
+            this.usingAreaObject = usingAreaObject;
         }
 
-        public UsingArea(List<ReferenceObject> matches)
+        public UsingArea(List<ReferenceObject> matches, ReferenceObject usingAreaObject, ConfigurationSettings configurationSettings)
         {
             this.matches = new List<MatchConnection>();
-            matches.ForEach(c => this.matches.Add(new MatchConnection(c)));
-
+            matches.ForEach(c => this.matches.Add(new MatchConnection(c, configurationSettings)));
+            this.usingAreaObject = usingAreaObject;
         }
 
         public override string ToString()
