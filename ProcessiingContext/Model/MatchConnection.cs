@@ -17,6 +17,7 @@ namespace ProcessiingContext.Model
         private ComplexHierarchyLink addHierarhyLink;
         private ComplexHierarchyLink removeHierarhyLink;
 
+        private Dictionary<ComplexHierarchyLink, Boolean> dictLinks;
         public ReferenceObject Match
         {
             get { return match; }
@@ -54,6 +55,7 @@ namespace ProcessiingContext.Model
             this.sourceHierarhyLink = SourceHierarchyLink;
             this.addHierarhyLink = AddHierarchyLink;
             this.removeHierarhyLink = RemoveHierarchyLink;
+            this.dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
         }
 
         public MatchConnection(ReferenceObject match, ConfigurationSettings configurationSettings)
@@ -70,11 +72,24 @@ namespace ProcessiingContext.Model
                 this.addHierarhyLink = addHierarhyManager.LinkedComplexLink;
             }
             var removeHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink];
-            using(removeHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            using (removeHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
             {
                 this.removeHierarhyLink = removeHierarhyManager.LinkedComplexLink;
             }
-            
+            this.dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
+        }
+
+        public void DeleteComplexHierarhyLinkInContext(DesignContextObject designContext)
+        {
+            IReadOnlyCollection<ComplexHierarchyLink> readonlyCol = dictLinks.Keys;
+            designContext.DeleteChangesAsync(readonlyCol);
+        }
+
+        public void CopyComplexHierarhyLInkInContext(DesignContextObject designContext)
+        {
+            dictLinks.Add(this.addHierarhyLink, true);
+            dictLinks.Add(this.removeHierarhyLink, true);
+            designContext.CopyMoveChangesAsync(dictLinks);
         }
 
         public override string ToString()

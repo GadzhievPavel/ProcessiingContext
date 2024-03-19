@@ -96,13 +96,14 @@ namespace ProcessiingContext.Model
             }
         }
 
-        public void MoveHierarchyLinks()
+        public void MoveHierarchyLinks(DesignContextObject designContext)
         {
             foreach(var usingArea in  usingAreas)
             {
                 foreach(var match in usingArea.Matches)
                 {
-                    
+                    match.CopyComplexHierarhyLInkInContext(designContext);
+
                 }
             }
         }
