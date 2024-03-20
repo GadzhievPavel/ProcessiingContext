@@ -30,6 +30,8 @@ namespace ProcessiingContext.Model
         private List<UsingArea> usingAreas;
 
         private ConfigurationSettings currentConfiguration;
+
+        private ServerConnection serverConnection;
         /// <summary>
         /// Ссылка на объект Изменение в системе
         /// </summary>
@@ -63,6 +65,7 @@ namespace ProcessiingContext.Model
         /// <param name="connection">подключение</param>
         public Modification(ReferenceObject modification, ServerConnection connection, DesignContextObject designContext = null)
         {
+            this.serverConnection = connection;
             this.modification = modification;
 
             if(designContext != null)
@@ -91,7 +94,7 @@ namespace ProcessiingContext.Model
                 foreach (var itemUsingArea in usingAreaObjects)
                 {
                     this.usingAreas.Add(new UsingArea(itemUsingArea.GetObjects(Guids.NotifyReference.Link.MatchesConnection),
-                        itemUsingArea, configurationSettings));
+                        itemUsingArea, configurationSettings, this.serverConnection));
                 }
             }
         }

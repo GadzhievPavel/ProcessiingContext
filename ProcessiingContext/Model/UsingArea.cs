@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TFlex.DOCs.Model;
 using TFlex.DOCs.Model.References;
 
 namespace ProcessiingContext.Model
@@ -15,6 +16,7 @@ namespace ProcessiingContext.Model
 
         private ReferenceObject usingAreaObject;
         private List<MatchConnection> matches;
+        private ServerConnection serverConnection;
         /// <summary>
         /// Список объектов типа "Соответствия подключений"
         /// </summary>
@@ -39,10 +41,11 @@ namespace ProcessiingContext.Model
             this.usingAreaObject = usingAreaObject;
         }
 
-        public UsingArea(List<ReferenceObject> matches, ReferenceObject usingAreaObject, ConfigurationSettings configurationSettings)
+        public UsingArea(List<ReferenceObject> matches, ReferenceObject usingAreaObject, ConfigurationSettings configurationSettings, ServerConnection serverConnection)
         {
+            this.serverConnection = serverConnection;
             this.matches = new List<MatchConnection>();
-            matches.ForEach(c => this.matches.Add(new MatchConnection(c, configurationSettings)));
+            matches.ForEach(c => this.matches.Add(new MatchConnection(c, configurationSettings, serverConnection)));
             this.usingAreaObject = usingAreaObject;
         }
 
