@@ -1,4 +1,5 @@
-﻿using ProcessiingContext.Model;
+﻿using DeveloperUtilsLibrary;
+using ProcessiingContext.Model;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TFlex.DOCs.Model;
 using TFlex.DOCs.Model.References;
+using TFlex.DOCs.Model.References.Nomenclature;
 
 namespace ProcessiingContext
 {
@@ -55,6 +57,15 @@ namespace ProcessiingContext
             }
         }
 
+        public void MoveHierarchyLinks(DesignContextObject designContext)
+        {
+            foreach(var item in modifications)
+            {
+                item.ModificationObject.StartUpdate();
+                item.MoveHierarchyLinks(designContext);
+                item.ModificationObject.EndUpdate($"Завершено перемещение изменения в контекст {designContext}");
+            }
+        }
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();

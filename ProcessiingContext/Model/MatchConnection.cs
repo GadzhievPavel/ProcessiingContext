@@ -1,4 +1,5 @@
-﻿using ProcessiingContext.Handler;
+﻿using DeveloperUtilsLibrary;
+using ProcessiingContext.Handler;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -52,17 +53,6 @@ namespace ProcessiingContext.Model
             //set { removeHierarhyLink = value; }
         }
 
-        //public MatchConnection(ReferenceObject nomenclature, ComplexHierarchyLink SourceHierarchyLink,
-        //    ComplexHierarchyLink AddHierarchyLink, ComplexHierarchyLink RemoveHierarchyLink, ServerConnection connection)
-        //{
-        //    this.nomenclature = nomenclature as NomenclatureObject;
-        //    this.sourceHierarhyLink = SourceHierarchyLink;
-        //    this.addHierarhyLink = AddHierarchyLink;
-        //    this.removeHierarhyLink = RemoveHierarchyLink;
-        //    this.dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
-        //    this.connection = connection;
-        //}
-
         public MatchConnection(ReferenceObject match, ConfigurationSettings configurationSettings, ServerConnection connection)
         {
             this.match = match;
@@ -94,7 +84,7 @@ namespace ProcessiingContext.Model
         }
 
         /// <summary>
-        /// 
+        /// Копирует подключения в указанный контекст
         /// </summary>
         /// <param name="designContext">контекст в который нужно скопировать подключения</param>
         /// <returns>новое представление соответствий подключений</returns>
@@ -113,6 +103,17 @@ namespace ProcessiingContext.Model
             return updateMatch;
         }
 
+        /// <summary>
+        /// Обновляет соответствие подключений в T-FLEX DOCs в соответствии с параметрами, хранящимися в объекте представления
+        /// </summary>
+        public void UpdateReferenceObject()
+        {
+            this.match.StartUpdate();
+            match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].SetLinkedComplexLink(this.addHierarhyLink);
+            match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].SetLinkedComplexLink(this.removeHierarhyLink);
+            match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.SourceHierarchyLink].SetLinkedComplexLink(this.SourceHierarhyLink);
+            this.match.EndChanges();
+        }
 
         public override string ToString()
         {

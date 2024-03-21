@@ -1,4 +1,5 @@
-﻿using System;
+﻿using DeveloperUtilsLibrary;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -103,12 +104,24 @@ namespace ProcessiingContext.Model
         {
             foreach(var usingArea in  usingAreas)
             {
+                usingArea.UsingAreaObject.StartUpdate();
                 foreach(var match in usingArea.Matches)
                 {
-                    match.CopyComplexHierarhyLInkInContext(designContext);
-
+                    var newMatch = match.CopyComplexHierarhyLInkInContext(designContext);
+                    newMatch.UpdateReferenceObject();
+                    match.DeleteComplexHierarhyLinkInContext(this.DesignContextObject);
                 }
+                usingArea.UsingAreaObject.EndChanges();
             }
+            setDesignContext(designContext);
+        }
+
+        private void setDesignContext(DesignContextObject designContext)
+        {
+            this.modification.StartUpdate();
+            this.modification.SetLinkedObject(ModificationReferenceObject.RelationKeys.DesignContext, designContext);
+            this.modification.EndUpdate("изменение контекста проектирования");
+            this.designContext = designContext;
         }
 
         public override string ToString()
