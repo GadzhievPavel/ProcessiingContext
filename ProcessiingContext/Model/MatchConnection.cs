@@ -124,8 +124,16 @@ namespace ProcessiingContext.Model
 
         public override string ToString()
         {
-            return $"Совпадение {match} номенклатура {nomenclature} исходное подключение {sourceHierarhyLink}" +
-                $" добавленное подключение {addHierarhyLink} удаляемое подключение {removeHierarhyLink}";
+            var matchStr = match==null ? "null": match.ToString();
+            var nomStr = nomenclature==null?"null":nomenclature.ToString();
+            var sourceStr = sourceHierarhyLink == null ? "null" : $"{sourceHierarhyLink} {sourceHierarhyLink.Id}";
+            var addLink = addHierarhyLink == null ? "null" : $"{addHierarhyLink} {addHierarhyLink.Id}";
+            var removeLink = removeHierarhyLink == null ? "null" : $"{removeHierarhyLink} {removeHierarhyLink.Id}";
+            return $"[Совпадение]: {matchStr}\n" +
+                $" [номенклатура]: {nomStr}\n" +
+                $" [исходное подключение]: {sourceStr}\n" +
+                $" [добавленное подключение]: {addLink}\n" +
+                $" [удаляемое подключение]: {removeLink}\n";
         }
     }
 }

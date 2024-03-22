@@ -127,7 +127,7 @@ namespace ProcessiingContext.Model
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"Изменение {modification} в контексте {designContext}:\n");
+            stringBuilder.AppendLine($"[Изменение]: {modification} в [контексте]: {designContext}:\n");
             foreach (var item in usingAreas)
             {
                 stringBuilder.Append(item.ToString());

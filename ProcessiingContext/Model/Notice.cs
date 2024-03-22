@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using TFlex.DOCs.Model;
 using TFlex.DOCs.Model.References;
 using TFlex.DOCs.Model.References.Nomenclature;
+using TFlex.DOCs.Resources.Strings;
 
 namespace ProcessiingContext
 {
@@ -60,9 +61,35 @@ namespace ProcessiingContext
 
             var list = notice.GetObjects(Guids.NotifyReference.Link.Modifications);
             this.modifications = new List<Modification>();
+
+            ConfigurationSettings configSettings = null;
+            if(designContext != null)
+            {
+                configSettings = new ConfigurationSettings(serverConnection)
+                {
+                    DesignContext = designContext,
+                    ApplyDesignContext = true,
+                    Date = Texts.TodayText,
+                    ApplyDate = true
+                };
+            }
+            
+
             foreach (var item in list)
             {
-                modifications.Add(new Modification(item, connection, currentDesignContext));
+                if(configSettings is null)
+                {
+                    modifications.Add(new Modification(item, connection, currentDesignContext));
+                }
+                else
+                {
+                    using (item.Reference.ChangeAndHoldConfigurationSettings(configSettings))
+                    {
+                        item.Reference.Refresh();
+                        item.Reload();
+                        modifications.Add(new Modification(item, connection, currentDesignContext));
+                    }
+                }
             }
         }
 
