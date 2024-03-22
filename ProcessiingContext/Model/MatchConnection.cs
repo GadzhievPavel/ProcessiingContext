@@ -90,8 +90,15 @@ namespace ProcessiingContext.Model
         /// <returns>новое представление соответствий подключений</returns>
         public MatchConnection CopyComplexHierarhyLInkInContext(DesignContextObject designContext)
         {
-            dictLinks.Add(this.addHierarhyLink, true);
-            dictLinks.Add(this.removeHierarhyLink, true);
+            if(addHierarhyLink != null)
+            {
+                dictLinks.Add(this.addHierarhyLink, true);
+            }
+            if(removeHierarhyLink != null)
+            {
+                dictLinks.Add(this.removeHierarhyLink, true);
+            }
+
             designContext.CopyMoveChangesAsync(dictLinks);
             NomenclatureHandler nomenclatureHandler = new NomenclatureHandler(this.connection);
             var copyAddHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(addHierarhyLink.ParentObject, addHierarhyLink.ChildObject, designContext);

@@ -69,7 +69,7 @@ namespace ProcessiingContext.Model
             this.serverConnection = connection;
             this.modification = modification;
 
-            if(designContext != null)
+            if(designContext is null)
             {
                 this.designContext = modification.GetObject(ModificationReferenceObject.RelationKeys.DesignContext) as DesignContextObject;
             }
