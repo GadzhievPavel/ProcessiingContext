@@ -50,20 +50,10 @@ namespace ProcessiingContext
             //set { modifications = value; }
         }
 
-        public Notice(ReferenceObject notice, ServerConnection serverConnection, DesignContextObject designContext=null)
+        public Notice(ReferenceObject notice, ServerConnection serverConnection, DesignContextObject designContext)
         {
-            this.notice = notice;
-            this.connection = serverConnection;
-            if (designContext != null)
-            {
-                this.currentDesignContext = designContext;
-            }
-
-            var list = notice.GetObjects(Guids.NotifyReference.Link.Modifications);
-            this.modifications = new List<Modification>();
-
             ConfigurationSettings configSettings = null;
-            if(designContext != null)
+            if (designContext != null)
             {
                 configSettings = new ConfigurationSettings(serverConnection)
                 {
@@ -73,29 +63,42 @@ namespace ProcessiingContext
                     ApplyDate = true
                 };
             }
-            
 
-            foreach (var item in list)
+            this.notice = notice;
+            this.connection = serverConnection;
+            this.currentDesignContext = designContext;
+            this.modifications = new List<Modification>();
+
+            var modificationsReferenceObject = new List<ReferenceObject>();
+            if(configSettings != null)
             {
-                if(configSettings is null)
+                using (notice.Reference.ChangeAndHoldConfigurationSettings(configSettings))
                 {
-                    modifications.Add(new Modification(item, connection, currentDesignContext));
+                    notice.Reference.Refresh();
+                    notice.Reload();
+                    modificationsReferenceObject = notice.GetObjects(Guids.NotifyReference.Link.Modifications);
                 }
-                else
+            }
+
+            if (modificationsReferenceObject.Any())
+            {
+                foreach(var modification in modificationsReferenceObject)
                 {
-                    using (item.Reference.ChangeAndHoldConfigurationSettings(configSettings))
-                    {
-                        item.Reference.Refresh();
-                        item.Reload();
-                        modifications.Add(new Modification(item, connection, currentDesignContext));
-                    }
+                    this.modifications.Add(new Modification(modification, connection, currentDesignContext));
+                }
+            }
+            else
+            {
+                foreach(var modification in notice.GetObjects(Guids.NotifyReference.Link.Modifications))
+                {
+                    this.modifications.Add(new Modification(modification, connection, currentDesignContext));
                 }
             }
         }
 
         public void MoveHierarchyLinks(DesignContextObject designContext)
         {
-            foreach(var item in modifications)
+            foreach (var item in modifications)
             {
                 item.ModificationObject.StartUpdate();
                 item.MoveHierarchyLinks(designContext);

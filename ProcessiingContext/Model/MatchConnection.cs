@@ -57,24 +57,37 @@ namespace ProcessiingContext.Model
         {
             this.match = match;
             this.configSettings = configurationSettings;
-            this.nomenclature = match.GetObject(Guids.NotifyReference.Link.ObjectPDM) as NomenclatureObject;
-            var srcHierarchyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.SourceHierarchyLink];
-            using (srcHierarchyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            this.connection = connection;
+            using (match.Reference.ChangeAndHoldConfigurationSettings(configSettings))
             {
-                this.sourceHierarhyLink = srcHierarchyManager.LinkedComplexLink;
-            }
-            var addHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink];
-            using (addHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
-            {
-                this.addHierarhyLink = addHierarhyManager.LinkedComplexLink;
-            }
-            var removeHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink];
-            using (removeHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
-            {
-                this.removeHierarhyLink = removeHierarhyManager.LinkedComplexLink;
+                match.Reference.Refresh();
+                match.Reload();
+                this.nomenclature = match.GetObject(Guids.NotifyReference.Link.ObjectPDM) as NomenclatureObject;
+                this.sourceHierarhyLink = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.SourceHierarchyLink].LinkedComplexLink;
+                this.addHierarhyLink = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].LinkedComplexLink;
+                this.removeHierarhyLink = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].LinkedComplexLink;
             }
             this.dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
-            this.connection = connection;
+            //this.match = match;
+            //this.configSettings = configurationSettings;
+            //this.nomenclature = match.GetObject(Guids.NotifyReference.Link.ObjectPDM) as NomenclatureObject;
+            //var srcHierarchyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.SourceHierarchyLink];
+            //using (srcHierarchyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            //{
+            //    this.sourceHierarhyLink = srcHierarchyManager.LinkedComplexLink;
+            //}
+            //var addHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink];
+            //using (addHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            //{
+            //    this.addHierarhyLink = addHierarhyManager.LinkedComplexLink;
+            //}
+            //var removeHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink];
+            //using (removeHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            //{
+            //    this.removeHierarhyLink = removeHierarhyManager.LinkedComplexLink;
+            //}
+            //this.dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
+            //this.connection = connection;
         }
 
         public void DeleteComplexHierarhyLinkInContext(DesignContextObject designContext)
@@ -90,11 +103,11 @@ namespace ProcessiingContext.Model
         /// <returns>новое представление соответствий подключений</returns>
         public MatchConnection CopyComplexHierarhyLInkInContext(DesignContextObject designContext)
         {
-            if(addHierarhyLink != null)
+            if (addHierarhyLink != null)
             {
                 dictLinks.Add(this.addHierarhyLink, true);
             }
-            if(removeHierarhyLink != null)
+            if (removeHierarhyLink != null)
             {
                 dictLinks.Add(this.removeHierarhyLink, true);
             }
@@ -102,7 +115,7 @@ namespace ProcessiingContext.Model
             designContext.CopyMoveChangesAsync(dictLinks);
             NomenclatureHandler nomenclatureHandler = new NomenclatureHandler(this.connection);
             var copyAddHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(addHierarhyLink.ParentObject, addHierarhyLink.ChildObject, designContext);
-            var copyRemoveHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(removeHierarhyLink.ParentObject, removeHierarhyLink.ChildObject,designContext);
+            var copyRemoveHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(removeHierarhyLink.ParentObject, removeHierarhyLink.ChildObject, designContext);
 
             var updateMatch = new MatchConnection(match, this.configSettings, connection);
             updateMatch.addHierarhyLink = copyAddHierarchyLink;
@@ -124,8 +137,8 @@ namespace ProcessiingContext.Model
 
         public override string ToString()
         {
-            var matchStr = match==null ? "null": match.ToString();
-            var nomStr = nomenclature==null?"null":nomenclature.ToString();
+            var matchStr = match == null ? "null" : match.ToString();
+            var nomStr = nomenclature == null ? "null" : nomenclature.ToString();
             var sourceStr = sourceHierarhyLink == null ? "null" : $"{sourceHierarhyLink} {sourceHierarhyLink.Id}";
             var addLink = addHierarhyLink == null ? "null" : $"{addHierarhyLink} {addHierarhyLink.Id}";
             var removeLink = removeHierarhyLink == null ? "null" : $"{removeHierarhyLink} {removeHierarhyLink.Id}";

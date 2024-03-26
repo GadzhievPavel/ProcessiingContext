@@ -68,8 +68,10 @@ namespace ProcessiingContext.Model
         {
             this.serverConnection = connection;
             this.modification = modification;
+            this.usingAreaLinksInContext = new List<ComplexHierarchyLink>();
+            this.usingAreas = new List<UsingArea>();
 
-            if(designContext is null)
+            if (designContext is null)
             {
                 this.designContext = modification.GetObject(ModificationReferenceObject.RelationKeys.DesignContext) as DesignContextObject;
             }
@@ -82,30 +84,30 @@ namespace ProcessiingContext.Model
                 ApplyDate = true
             };
 
-            this.usingAreaLinksInContext = new List<ComplexHierarchyLink>();
-            this.usingAreas = new List<UsingArea>();
-            fillUsingArea(currentConfiguration);
+            fillUsingArea();
         }
 
-        private void fillUsingArea(ConfigurationSettings configurationSettings)
+        private void fillUsingArea()
         {
             using (modification.Reference.ChangeAndHoldConfigurationSettings(currentConfiguration))
             {
+                this.modification.Reference.Refresh();
+                this.modification.Reload();
+
                 var usingAreaObjects = modification.GetObjects(ModificationReferenceObject.RelationKeys.UsingArea);
                 foreach (var itemUsingArea in usingAreaObjects)
                 {
-                    this.usingAreas.Add(new UsingArea(itemUsingArea.GetObjects(Guids.NotifyReference.Link.MatchesConnection),
-                        itemUsingArea, configurationSettings, this.serverConnection));
+                    this.usingAreas.Add(new UsingArea(itemUsingArea, currentConfiguration, this.serverConnection));
                 }
             }
         }
 
         public void MoveHierarchyLinks(DesignContextObject designContext)
         {
-            foreach(var usingArea in  usingAreas)
+            foreach (var usingArea in usingAreas)
             {
                 usingArea.UsingAreaObject.StartUpdate();
-                foreach(var match in usingArea.Matches)
+                foreach (var match in usingArea.Matches)
                 {
                     var newMatch = match.CopyComplexHierarhyLInkInContext(designContext);
                     newMatch.UpdateReferenceObject();

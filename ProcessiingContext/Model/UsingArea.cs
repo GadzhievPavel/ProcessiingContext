@@ -41,12 +41,18 @@ namespace ProcessiingContext.Model
             this.usingAreaObject = usingAreaObject;
         }
 
-        public UsingArea(List<ReferenceObject> matches, ReferenceObject usingAreaObject, ConfigurationSettings configurationSettings, ServerConnection serverConnection)
+        public UsingArea(ReferenceObject usingAreaObject, ConfigurationSettings configurationSettings, ServerConnection serverConnection)
         {
+            this.usingAreaObject = usingAreaObject;
             this.serverConnection = serverConnection;
             this.matches = new List<MatchConnection>();
-            matches.ForEach(c => this.matches.Add(new MatchConnection(c, configurationSettings, serverConnection)));
-            this.usingAreaObject = usingAreaObject;
+            using(usingAreaObject.Reference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            {
+                usingAreaObject.Reference.Refresh();
+                usingAreaObject.Reload();
+                var tempMatches = usingAreaObject.GetObjects(Guids.NotifyReference.Link.MatchesConnection);
+                tempMatches.ForEach(c => this.matches.Add(new MatchConnection(c, configurationSettings, serverConnection)));
+            }
         }
 
         public override string ToString()

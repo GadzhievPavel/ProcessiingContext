@@ -17,9 +17,9 @@ namespace ProcessiingContext.Handler
     {
         private Notice notice;
         private ServerConnection connection;
-        public ProcessingNotice(ReferenceObject _notice, ServerConnection connection)
+        public ProcessingNotice(ReferenceObject _notice, ServerConnection connection, DesignContextObject designContext)
         {
-            this.notice = new Notice(_notice, connection);
+            this.notice = new Notice(_notice, connection, designContext);
             this.connection = connection;
         }
 
