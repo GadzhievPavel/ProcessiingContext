@@ -30,9 +30,9 @@ namespace ProcessiingContext
         /// </summary>
         private ServerConnection connection;
         /// <summary>
-        /// текущий контекст ИИ
+        /// Конфигурация для просмотра
         /// </summary>
-        private DesignContextObject currentDesignContext;
+        private ConfigurationSettings configuration;
         /// <summary>
         /// Ссылка на объект ИИ в системе
         /// </summary>
@@ -50,29 +50,16 @@ namespace ProcessiingContext
             //set { modifications = value; }
         }
 
-        public Notice(ReferenceObject notice, ServerConnection serverConnection, DesignContextObject designContext)
+        public Notice(ReferenceObject notice, ServerConnection serverConnection, ConfigurationSettings configurationSettings) 
         {
-            ConfigurationSettings configSettings = null;
-            if (designContext != null)
-            {
-                configSettings = new ConfigurationSettings(serverConnection)
-                {
-                    DesignContext = designContext,
-                    ApplyDesignContext = true,
-                    Date = Texts.TodayText,
-                    ApplyDate = true
-                };
-            }
-
             this.notice = notice;
             this.connection = serverConnection;
-            this.currentDesignContext = designContext;
             this.modifications = new List<Modification>();
-
+            this.configuration = configurationSettings;
             var modificationsReferenceObject = new List<ReferenceObject>();
-            if(configSettings != null)
+            if(this.configuration != null)
             {
-                using (notice.Reference.ChangeAndHoldConfigurationSettings(configSettings))
+                using (notice.Reference.ChangeAndHoldConfigurationSettings(configurationSettings))
                 {
                     notice.Reference.Refresh();
                     notice.Reload();
@@ -84,18 +71,15 @@ namespace ProcessiingContext
             {
                 foreach(var modification in modificationsReferenceObject)
                 {
-                    this.modifications.Add(new Modification(modification, connection, currentDesignContext));
-                }
-            }
-            else
-            {
-                foreach(var modification in notice.GetObjects(Guids.NotifyReference.Link.Modifications))
-                {
-                    this.modifications.Add(new Modification(modification, connection, currentDesignContext));
+                    this.modifications.Add(new Modification(modification, connection, configurationSettings));
                 }
             }
         }
 
+        /// <summary>
+        /// Перенос изменения и подключений в другой контекст
+        /// </summary>
+        /// <param name="designContext">контекст в который надо перенести</param>
         public void MoveHierarchyLinks(DesignContextObject designContext)
         {
             foreach (var item in modifications)
@@ -105,10 +89,34 @@ namespace ProcessiingContext
                 item.ModificationObject.EndUpdate($"Завершено перемещение изменения в контекст {designContext}");
             }
         }
+
+        /// <summary>
+        /// Возвращает конфигурацию для просмотра ИИ 
+        /// </summary>
+        /// <returns></returns>
+        public ConfigurationSettings GetConfigModifications()
+        {
+            HashSet<DesignContextObject> designContextObjects = new HashSet<DesignContextObject>();
+            foreach( var item in modifications)
+            {
+                designContextObjects.Add(item.DesignContextObject);
+            }
+            if (designContextObjects.Count == 1)
+            {
+                return new ConfigurationSettings(connection)
+                {
+                    DesignContext = designContextObjects.ElementAt(0),
+                    ApplyDesignContext = true,
+                    ShowDeletedInDesignContextLinks = true
+                };
+            }
+            return null;
+        }
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.Append($"ИИ {notice}:\n");
+            stringBuilder.Append($"[Выбранная конфигурация]: {configuration.DesignContext}\n");
+            stringBuilder.Append($"ИИ: {notice}\n ");
             foreach (var item in modifications)
             {
                 stringBuilder.Append(item.ToString());

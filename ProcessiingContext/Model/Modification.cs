@@ -22,7 +22,7 @@ namespace ProcessiingContext.Model
         /// </summary>
         private ReferenceObject modification;
         /// <summary>
-        /// контекст проектирования
+        /// контекст проектирования в изменени
         /// </summary>
         private DesignContextObject designContext;
         /// <summary>
@@ -64,26 +64,14 @@ namespace ProcessiingContext.Model
         /// </summary>
         /// <param name="modification">изменение в DOCs</param>
         /// <param name="connection">подключение</param>
-        public Modification(ReferenceObject modification, ServerConnection connection, DesignContextObject designContext = null)
+        public Modification(ReferenceObject modification, ServerConnection connection, ConfigurationSettings configurationSettings)
         {
             this.serverConnection = connection;
             this.modification = modification;
             this.usingAreaLinksInContext = new List<ComplexHierarchyLink>();
             this.usingAreas = new List<UsingArea>();
-
-            if (designContext is null)
-            {
-                this.designContext = modification.GetObject(ModificationReferenceObject.RelationKeys.DesignContext) as DesignContextObject;
-            }
-
-            this.currentConfiguration = new ConfigurationSettings(connection)
-            {
-                DesignContext = this.designContext,
-                ApplyDesignContext = true,
-                Date = Texts.TodayText,
-                ApplyDate = true
-            };
-
+            this.currentConfiguration = configurationSettings;
+            this.designContext = modification.GetObject(ModificationReferenceObject.RelationKeys.DesignContext) as DesignContextObject;
             fillUsingArea();
         }
 
@@ -101,7 +89,10 @@ namespace ProcessiingContext.Model
                 }
             }
         }
-
+        /// <summary>
+        /// Перенос измененения и подключения в заданный контекст
+        /// </summary>
+        /// <param name="designContext">контекст, в который надо перенести</param>
         public void MoveHierarchyLinks(DesignContextObject designContext)
         {
             foreach (var usingArea in usingAreas)
@@ -129,7 +120,9 @@ namespace ProcessiingContext.Model
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.AppendLine($"[Изменение]: {modification} в [контексте]: {designContext}:\n");
+            stringBuilder.AppendLine($"[Изменение]: {modification}");
+            stringBuilder.AppendLine($"[Конфигурация]: {this.currentConfiguration.DesignContext}");
+            //stringBuilder.AppendLine($"[Конфигурация просмотра DesignContext]: {currentConfiguration.DesignContext}");
             foreach (var item in usingAreas)
             {
                 stringBuilder.Append(item.ToString());

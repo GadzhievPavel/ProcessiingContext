@@ -147,6 +147,7 @@ namespace ProcessiingContext.Model
                 $" [исходное подключение]: {sourceStr}\n" +
                 $" [добавленное подключение]: {addLink}\n" +
                 $" [удаляемое подключение]: {removeLink}\n";
+                //$" [конфигурация DesignContext]:/*{configDesign}*/\n";
         }
     }
 }
