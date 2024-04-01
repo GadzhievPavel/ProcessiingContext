@@ -90,27 +90,37 @@ namespace ProcessiingContext
             }
         }
 
-        /// <summary>
-        /// Возвращает конфигурацию для просмотра ИИ 
-        /// </summary>
-        /// <returns></returns>
-        public ConfigurationSettings GetConfigModifications()
+        ///// <summary>
+        ///// Возвращает конфигурацию для просмотра ИИ 
+        ///// </summary>
+        ///// <returns></returns>
+        //public ConfigurationSettings GetConfigModifications()
+        //{
+        //    HashSet<DesignContextObject> designContextObjects = new HashSet<DesignContextObject>();
+        //    foreach( var item in modifications)
+        //    {
+        //        designContextObjects.Add(item.DesignContextObject);
+        //    }
+        //    if (designContextObjects.Count == 1)
+        //    {
+        //        return new ConfigurationSettings(connection)
+        //        {
+        //            DesignContext = designContextObjects.ElementAt(0),
+        //            ApplyDesignContext = true,
+        //            ShowDeletedInDesignContextLinks = true
+        //        };
+        //    }
+        //    return null;
+        //}
+
+        public static ConfigurationSettings GetConfigModifications(ReferenceObject ii)
         {
             HashSet<DesignContextObject> designContextObjects = new HashSet<DesignContextObject>();
-            foreach( var item in modifications)
+            var modifications = ii.GetObjects(Guids.NotifyReference.Link.Modifications);
+            foreach (var item in modifications)
             {
-                designContextObjects.Add(item.DesignContextObject);
+                designContextObjects.
             }
-            if (designContextObjects.Count == 1)
-            {
-                return new ConfigurationSettings(connection)
-                {
-                    DesignContext = designContextObjects.ElementAt(0),
-                    ApplyDesignContext = true,
-                    ShowDeletedInDesignContextLinks = true
-                };
-            }
-            return null;
         }
         public override string ToString()
         {
