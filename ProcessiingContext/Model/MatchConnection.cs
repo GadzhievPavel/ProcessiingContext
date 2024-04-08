@@ -114,8 +114,8 @@ namespace ProcessiingContext.Model
 
             designContext.CopyMoveChangesAsync(dictLinks);
             NomenclatureHandler nomenclatureHandler = new NomenclatureHandler(this.connection);
-            var copyAddHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(addHierarhyLink.ParentObject, addHierarhyLink.ChildObject, designContext);
-            var copyRemoveHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(removeHierarhyLink.ParentObject, removeHierarhyLink.ChildObject, designContext);
+            var copyAddHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(addHierarhyLink, designContext);
+            var copyRemoveHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(removeHierarhyLink, designContext);
 
             var updateMatch = new MatchConnection(match, this.configSettings, connection);
             updateMatch.addHierarhyLink = copyAddHierarchyLink;

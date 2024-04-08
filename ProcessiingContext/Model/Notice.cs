@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TFlex.DOCs.Model;
 using TFlex.DOCs.Model.References;
+using TFlex.DOCs.Model.References.Modifications;
 using TFlex.DOCs.Model.References.Nomenclature;
 using TFlex.DOCs.Resources.Strings;
 
@@ -50,14 +51,14 @@ namespace ProcessiingContext
             //set { modifications = value; }
         }
 
-        public Notice(ReferenceObject notice, ServerConnection serverConnection, ConfigurationSettings configurationSettings) 
+        public Notice(ReferenceObject notice, ServerConnection serverConnection, ConfigurationSettings configurationSettings)
         {
             this.notice = notice;
             this.connection = serverConnection;
             this.modifications = new List<Modification>();
             this.configuration = configurationSettings;
             var modificationsReferenceObject = new List<ReferenceObject>();
-            if(this.configuration != null)
+            if (this.configuration != null)
             {
                 using (notice.Reference.ChangeAndHoldConfigurationSettings(configurationSettings))
                 {
@@ -69,7 +70,7 @@ namespace ProcessiingContext
 
             if (modificationsReferenceObject.Any())
             {
-                foreach(var modification in modificationsReferenceObject)
+                foreach (var modification in modificationsReferenceObject)
                 {
                     this.modifications.Add(new Modification(modification, connection, configurationSettings));
                 }
@@ -90,6 +91,20 @@ namespace ProcessiingContext
             }
         }
 
+        /// <summary>
+        /// Возвращает список исходных подключений
+        /// </summary>
+        /// <returns></returns>
+        public List<ComplexHierarchyLink> GetAllSourceHierarchyLinks()
+        {
+            List<ComplexHierarchyLink> sourceLinks = new List<ComplexHierarchyLink>();
+            this.Modifications.ForEach(modification =>
+            {
+                modification.UsingAreas.ForEach(usingArea =>
+                    usingArea.Matches.ForEach(match => sourceLinks.Add(match.SourceHierarhyLink)));
+            });
+            return sourceLinks;
+        }
         ///// <summary>
         ///// Возвращает конфигурацию для просмотра ИИ 
         ///// </summary>
@@ -113,15 +128,52 @@ namespace ProcessiingContext
         //    return null;
         //}
 
-        public static ConfigurationSettings GetConfigModifications(ReferenceObject ii)
+        /// <summary>
+        /// Возвращает конфигурацию для работы с ии в контексте, в котором на текущий момент находятся изменения
+        /// </summary>
+        /// <param name="ii">Извещение об изменении</param>
+        /// <param name="serverConnection">подключение сервера</param>
+        /// <returns>конфигурация</returns>
+        /// <exception cref="Exception">Ошибка, если отсутствует контекст в изменении по связи.
+        /// Ошибка, не все изменения находятся в одном контексте проектирования.
+        /// Ошибка, множество контекстов проектирования пусто
+        /// </exception>
+        public static ConfigurationSettings GetConfigModifications(ReferenceObject ii, ServerConnection serverConnection)
         {
             HashSet<DesignContextObject> designContextObjects = new HashSet<DesignContextObject>();
             var modifications = ii.GetObjects(Guids.NotifyReference.Link.Modifications);
             foreach (var item in modifications)
             {
-                designContextObjects.
+
+                var designContext = item.GetObject(ModificationReferenceObject.RelationKeys.DesignContext) as DesignContextObject;
+                if (designContext is null)
+                {
+                    throw new Exception($"В изменении {item} отсутствует контекст проектирования по связи {ModificationReferenceObject.RelationKeys.DesignContext}");
+                }
+                designContextObjects.Add(designContext);
+            }
+
+            if (designContextObjects.Count > 1)
+            {
+                throw new Exception("Не все изменения находятся в одном контексте проектирования");
+            }
+            else if (designContextObjects.Count == 0)
+            {
+                throw new Exception("Множество контекстов проектирования пусто");
+            }
+            else
+            {
+                var designContext = designContextObjects.First();
+                var config = new ConfigurationSettings(serverConnection)
+                {
+                    DesignContext = designContext,
+                    ApplyDesignContext = true,
+                    ShowDeletedInDesignContextLinks = true
+                };
+                return config;
             }
         }
+
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();

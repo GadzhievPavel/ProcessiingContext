@@ -17,78 +17,55 @@ namespace ProcessiingContext.Handler
     {
         private Notice notice;
         private ServerConnection connection;
+        private NomenclatureHandler nomenclatureHandler;
         public ProcessingNotice(ReferenceObject _notice, ServerConnection connection, ConfigurationSettings configurationSettings)
         {
             this.notice = new Notice(_notice, connection, configurationSettings);
             this.connection = connection;
+            this.nomenclatureHandler = new NomenclatureHandler(connection);
         }
 
-        public void MoveToContext()
+        /// <summary>
+        /// Проверяет возможность переноса текущего ИИ в заданный контекст
+        /// </summary>
+        /// <param name="targetContext">Целевой контекст</param>
+        /// <returns>true если можно перенести</returns>
+        public bool IsEnableMoveInContext(DesignContextObject targetContext)
         {
-            foreach (var modification in notice.Modifications)
+            var sourceLinks = notice.GetAllSourceHierarchyLinks();
+            foreach (var sourceLink in sourceLinks)
             {
-                var configSettiings = new ConfigurationSettings(connection.ConfigurationSettings)
+                var findSourceLink = nomenclatureHandler.FindComplexHierarhyLink(sourceLink, targetContext);
+                if (findSourceLink is null)
                 {
-                    DesignContext = modification.DesignContextObject
-                };
-                using (notice.NoticeObject.Reference.ChangeAndHoldConfigurationSettings(configSettiings))
-                {
-                    //to do move
+                    return false;
                 }
             }
+            return true;
         }
 
-        private void MoveHierarchyLinks(Modification modification, DesignContextObject contextDesign)
+        /// <summary>
+        /// Возвращает текстовое сообщение с информацией о возможности переноса в указанный контекст
+        /// </summary>
+        /// <param name="targetContext">целевой контекст</param>
+        /// <returns>отчет</returns>
+        public String GetReportMoveInContext(DesignContextObject targetContext)
         {
-            var designContext = modification.DesignContextObject;
-            if (designContext is null)
+            StringBuilder stringBuilder = new StringBuilder();
+            var sourceLinks = notice.GetAllSourceHierarchyLinks();
+            foreach (var sourceLink in sourceLinks)
             {
-                return;
-            }
-
-            var newConfigurationSettings = new ConfigurationSettings(connection)
-            {
-                DesignContext = designContext,
-                ApplyDesignContext = true,
-                Date = Texts.TodayText,
-                ApplyDate = true
-            };
-
-            var usingAreaLinksInContext = new List<ComplexHierarchyLink>();
-
-            foreach (var usingAreaObject in modification.UsingAreas)
-            {
-                foreach (var match in usingAreaObject.Matches)
+                var findSourceLink = nomenclatureHandler.FindComplexHierarhyLink(sourceLink, targetContext);
+                if(findSourceLink is null)
                 {
-                    FillUsingAreaLinksInContext(match, newConfigurationSettings, designContext, ref usingAreaLinksInContext, Guids.UsingAreaAddedLink);
-                    FillUsingAreaLinksInContext(match, newConfigurationSettings, designContext, ref usingAreaLinksInContext, Guids.UsingAreaDeletedLink);
-                }
-                if (!usingAreaLinksInContext.IsNullOrEmpty())
-                {
-                    usingAreaLinksInContext = usingAreaLinksInContext.Distinct().ToList();
-                    var dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
-                    usingAreaLinksInContext.ForEach(link => dictLinks.Add(link, true));
-                    contextDesign.CopyMoveChangesAsync(dictLinks);
-
-                    modification.ModificationObject.StartUpdate();
-                    //usingAreaObject.
+                    stringBuilder.AppendLine($"Не было найдено подключение c id: {sourceLink.Id} в контексте {targetContext} между {sourceLink.ParentObject} и {sourceLink.ChildObject}\n");
                 }
             }
-        }
-
-        private void FillUsingAreaLinksInContext(MatchConnection match, ConfigurationSettings settings, DesignContextObject context,
-            ref List<ComplexHierarchyLink> listUsingArea, Guid linkGuid)
-        {
-            var links = match.Match.Links.ToOneToComplexHierarchy[linkGuid];
-            using (links.LinkReference.ChangeAndHoldConfigurationSettings(settings))
+            if (stringBuilder.Length == 0)
             {
-                links.Reload();
-                var linkedComplexLink = links.LinkedComplexLink;
-                if (linkedComplexLink != null && linkedComplexLink.SystemFields.DesignContextId == context.Id)
-                {
-                    listUsingArea.Add(linkedComplexLink);
-                }
+                stringBuilder.AppendLine($"ИИ можно перенести в {targetContext}");
             }
+            return stringBuilder.ToString();
         }
     }
 }
