@@ -95,16 +95,24 @@ namespace ProcessiingContext.Model
         /// <param name="designContext">контекст, в который надо перенести</param>
         public void MoveHierarchyLinks(DesignContextObject designContext)
         {
+            var config = new ConfigurationSettings(this.serverConnection)
+            {
+                DesignContext = designContext,
+                ApplyDesignContext = true,
+                ShowDeletedInDesignContextLinks = true
+            };
+
             foreach (var usingArea in usingAreas)
             {
                 usingArea.UsingAreaObject.StartUpdate();
                 foreach (var match in usingArea.Matches)
                 {
-                    var newMatch = match.CopyComplexHierarhyLInkInContext(designContext);
-                    newMatch.UpdateReferenceObject();
+                    var newConnections = match.CopyComplexHierarhyLInkInContext(designContext);
+                    //newMatch.UpdateReferenceObject();
                     match.DeleteComplexHierarhyLinkInContext(this.DesignContextObject);
+                    match.SetLinkConnections(newConnections, config);
                 }
-                usingArea.UsingAreaObject.EndChanges();
+                usingArea.UsingAreaObject.EndUpdate("обновление подключений");
             }
             setDesignContext(designContext);
         }

@@ -101,7 +101,36 @@ namespace ProcessiingContext.Model
         /// </summary>
         /// <param name="designContext">контекст в который нужно скопировать подключения</param>
         /// <returns>новое представление соответствий подключений</returns>
-        public MatchConnection CopyComplexHierarhyLInkInContext(DesignContextObject targetContext)
+        //public MatchConnection CopyComplexHierarhyLInkInContext(DesignContextObject targetContext)
+        //{
+        //    if (addHierarhyLink != null)
+        //    {
+        //        dictLinks.Add(this.addHierarhyLink, true);
+        //    }
+        //    if (removeHierarhyLink != null)
+        //    {
+        //        dictLinks.Add(this.removeHierarhyLink, true);
+        //    }
+
+        //    targetContext.CopyMoveChangesAsync(dictLinks);
+        //    NomenclatureHandler nomenclatureHandler = new NomenclatureHandler(this.connection);
+        //    var copyAddHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(addHierarhyLink, targetContext);
+        //    var copyRemoveHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(removeHierarhyLink, targetContext);
+
+        //    var config = new ConfigurationSettings(this.connection)
+        //    {
+        //        DesignContext = targetContext,
+        //        ApplyDesignContext = true,
+        //        ShowDeletedInDesignContextLinks = true
+        //    };
+
+        //    var updateMatch = new MatchConnection(match, config, connection);
+        //    updateMatch.addHierarhyLink = copyAddHierarchyLink;
+        //    updateMatch.removeHierarhyLink = copyRemoveHierarchyLink;
+        //    return updateMatch;
+        //}
+
+        public PairConnections CopyComplexHierarhyLInkInContext(DesignContextObject targetContext)
         {
             if (addHierarhyLink != null)
             {
@@ -116,19 +145,14 @@ namespace ProcessiingContext.Model
             NomenclatureHandler nomenclatureHandler = new NomenclatureHandler(this.connection);
             var copyAddHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(addHierarhyLink, targetContext);
             var copyRemoveHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(removeHierarhyLink, targetContext);
-
-            var config = new ConfigurationSettings(this.connection)
+            var pairConnections = new PairConnections()
             {
-                DesignContext = targetContext,
-                ApplyDesignContext = true,
-                ShowDeletedInDesignContextLinks = true
+                AddLink = copyAddHierarchyLink,
+                RemoveLink = copyRemoveHierarchyLink
             };
-
-            var updateMatch = new MatchConnection(match, config, connection);
-            updateMatch.addHierarhyLink = copyAddHierarchyLink;
-            updateMatch.removeHierarhyLink = copyRemoveHierarchyLink;
-            return updateMatch;
+            return pairConnections;
         }
+
 
         /// <summary>
         /// Обновляет соответствие подключений в T-FLEX DOCs в соответствии с параметрами, хранящимися в объекте представления
@@ -147,6 +171,18 @@ namespace ProcessiingContext.Model
             }
         }
 
+        public void SetLinkConnections(PairConnections pairConnections, ConfigurationSettings configurationSettings)
+        {
+            //using(match.Reference.ChangeAndHoldConfigurationSettings(configurationSettings))
+            //{
+            //    match.Reference.Refresh();
+            //    match.Reload();
+                this.match.StartUpdate();
+                match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].SetLinkedComplexLink(pairConnections.AddLink);
+                match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].SetLinkedComplexLink(pairConnections.RemoveLink);
+                this.match.EndUpdate("обновление подключений");
+            //}
+        }
         public override string ToString()
         {
             var matchStr = match == null ? "null" : match.ToString();
