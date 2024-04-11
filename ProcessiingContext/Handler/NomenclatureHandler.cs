@@ -36,7 +36,8 @@ namespace ProcessiingContext.Handler
                 DesignContext = CurrentDesignContext,
                 ApplyDesignContext = true,
                 Date = Texts.TodayText,
-                ApplyDate = true
+                ApplyDate = true,
+                ShowDeletedInDesignContextLinks = true
             };
 
             ComplexHierarchyLink findedHierarchyLink = null;
