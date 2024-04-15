@@ -81,13 +81,13 @@ namespace ProcessiingContext
         /// Перенос изменения и подключений в другой контекст
         /// </summary>
         /// <param name="designContext">контекст в который надо перенести</param>
-        public void MoveHierarchyLinks(DesignContextObject designContext)
+        public void MoveHierarchyLinks(DesignContextObject targetDesignContext)
         {
             foreach (var item in modifications)
             {
                 item.ModificationObject.StartUpdate();
-                item.MoveHierarchyLinks(designContext);
-                item.ModificationObject.EndUpdate($"Завершено перемещение изменения в контекст {designContext}");
+                item.MoveHierarchyLinks(targetDesignContext);
+                item.ModificationObject.EndUpdate($"Завершено перемещение изменения в контекст {targetDesignContext}");
             }
         }
 

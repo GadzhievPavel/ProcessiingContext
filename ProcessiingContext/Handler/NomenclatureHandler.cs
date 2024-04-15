@@ -26,14 +26,14 @@ namespace ProcessiingContext.Handler
         /// <param name="children"></param>
         /// <param name="CurrentDesignContext"></param>
         /// <returns></returns>
-        public ComplexHierarchyLink FindComplexHierarhyLink(ComplexHierarchyLink complexLink,  DesignContextObject CurrentDesignContext)
+        public ComplexHierarchyLink FindComplexHierarhyLink(ComplexHierarchyLink complexLink,  DesignContextObject designContext)
         {
             ReferenceObject parent = complexLink.ParentObject;
             ReferenceObject children = complexLink.ChildObject;
 
             var ConfigurationSettings = new ConfigurationSettings(serverConnection)
             {
-                DesignContext = CurrentDesignContext,
+                DesignContext = designContext,
                 ApplyDesignContext = true,
                 Date = Texts.TodayText,
                 ApplyDate = true,

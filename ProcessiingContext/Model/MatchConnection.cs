@@ -175,12 +175,16 @@ namespace ProcessiingContext.Model
         {
             //using(match.Reference.ChangeAndHoldConfigurationSettings(configurationSettings))
             //{
-            //    match.Reference.Refresh();
-            //    match.Reload();
-                this.match.StartUpdate();
-                match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].SetLinkedComplexLink(pairConnections.AddLink);
-                match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].SetLinkedComplexLink(pairConnections.RemoveLink);
-                this.match.EndUpdate("обновление подключений");
+            match.Reference.Refresh();
+            match.Reload();
+            this.match.StartUpdate();
+            this.match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].SetLinkedComplexLink(pairConnections.AddLink);
+            match.Reference.Refresh();
+            match.Reload();
+            this.match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].SetLinkedComplexLink(pairConnections.RemoveLink);
+            match.Reference.Refresh();
+            match.Reload();
+            this.match.EndUpdate("обновление подключений");
             //}
         }
         public override string ToString()
@@ -195,7 +199,7 @@ namespace ProcessiingContext.Model
                 $" [исходное подключение]: {sourceStr}\n" +
                 $" [добавленное подключение]: {addLink}\n" +
                 $" [удаляемое подключение]: {removeLink}\n";
-                //$" [конфигурация DesignContext]:/*{configDesign}*/\n";
+            //$" [конфигурация DesignContext]:/*{configDesign}*/\n";
         }
     }
 }
