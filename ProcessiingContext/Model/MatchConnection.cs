@@ -148,7 +148,8 @@ namespace ProcessiingContext.Model
             var pairConnections = new PairConnections()
             {
                 AddLink = copyAddHierarchyLink,
-                RemoveLink = copyRemoveHierarchyLink
+                RemoveLink = copyRemoveHierarchyLink,
+                Match = this.match
             };
             return pairConnections;
         }

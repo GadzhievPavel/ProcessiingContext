@@ -11,5 +11,6 @@ namespace ProcessiingContext.Model
     {
         public ComplexHierarchyLink AddLink { get; set; }
         public ComplexHierarchyLink RemoveLink { get; set; }
+        public ReferenceObject Match {  get; set; }
     }
 }

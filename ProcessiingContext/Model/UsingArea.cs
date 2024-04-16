@@ -54,7 +54,6 @@ namespace ProcessiingContext.Model
                 tempMatches.ForEach(c => this.matches.Add(new MatchConnection(c, configurationSettings, serverConnection)));
             }
         }
-
         public override string ToString()
         {
             StringBuilder stringBuilder = new StringBuilder();

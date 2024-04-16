@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using TFlex.DOCs.Model;
 using TFlex.DOCs.Model.References;
@@ -101,20 +102,75 @@ namespace ProcessiingContext.Model
                 ApplyDesignContext = true,
                 ShowDeletedInDesignContextLinks = true
             };
-
+            List<PairConnections> connections = new List<PairConnections>();
             foreach (var usingArea in usingAreas)
             {
                 usingArea.UsingAreaObject.StartUpdate();
                 foreach (var match in usingArea.Matches)
                 {
                     var newConnections = match.CopyComplexHierarhyLInkInContext(targetDesignContext);
+                    connections.Add(newConnections);
                     //newMatch.UpdateReferenceObject();
                     match.DeleteComplexHierarhyLinkInContext(this.DesignContextObject);
-                    match.SetLinkConnections(newConnections, config);
+                    //match.SetLinkConnections(newConnections, config);
                 }
                 usingArea.UsingAreaObject.EndUpdate("обновление подключений");
             }
+            using (modification.Reference.ChangeAndHoldConfigurationSettings(config))
+            {
+                modification.Reference.Refresh();
+                modification.Reload();
+                foreach(var connection in connections)
+                {
+                    var findedMatch = FindMatch(connection.Match, true);
+                    UpdateMatch(findedMatch,connection);
+                }
+                Save();
+            }
             setDesignContext(targetDesignContext);
+        }
+
+        private ReferenceObject FindMatch(ReferenceObject match, bool editIt)
+        {
+            var usingAreas = modification.GetObjects(ModificationReferenceObject.RelationKeys.UsingArea);
+            foreach (var usingArea in usingAreas)
+            {
+                var matches = usingArea.GetObjects(Guids.NotifyReference.Link.MatchesConnection);
+                foreach (var selectMatch in matches)
+                {
+                    if (selectMatch.Equals(match))
+                    {
+                        if (editIt)
+                        {
+                            selectMatch.StartUpdate();
+                            usingArea.StartUpdate();
+                        }
+                        return selectMatch;
+                    }
+                }
+            }
+            return null;
+        }
+
+        private void Save()
+        {
+            var usingAreas = modification.GetObjects(ModificationReferenceObject.RelationKeys.UsingArea);
+            foreach (var usingArea in usingAreas)
+            {
+                var matches = usingArea.GetObjects(Guids.NotifyReference.Link.MatchesConnection);
+                foreach (var selectMatch in matches)
+                {
+                    selectMatch.EndUpdate("сохраняем соотетствие");
+                }
+                usingArea.EndUpdate("сохраняем область применения");
+            }
+            this.modification.EndUpdate("сохраняем изменение");
+        }
+
+        private void UpdateMatch(ReferenceObject match, PairConnections pairConnections)
+        {
+            match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].SetLinkedComplexLink(pairConnections.RemoveLink);
+            match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].SetLinkedComplexLink(pairConnections.AddLink);
         }
 
         private void setDesignContext(DesignContextObject designContext)
