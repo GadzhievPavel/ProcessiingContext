@@ -76,6 +76,9 @@ namespace ProcessiingContext.Model
             fillUsingArea();
         }
 
+        /// <summary>
+        /// Заполнение области применения
+        /// </summary>
         private void fillUsingArea()
         {
             using (modification.Reference.ChangeAndHoldConfigurationSettings(currentConfiguration))
@@ -116,6 +119,7 @@ namespace ProcessiingContext.Model
                 }
                 usingArea.UsingAreaObject.EndUpdate("обновление подключений");
             }
+
             using (modification.Reference.ChangeAndHoldConfigurationSettings(config))
             {
                 modification.Reference.Refresh();
@@ -130,6 +134,12 @@ namespace ProcessiingContext.Model
             setDesignContext(targetDesignContext);
         }
 
+        /// <summary>
+        /// Поиск соответствия подключений
+        /// </summary>
+        /// <param name="match">искомое подключение</param>
+        /// <param name="editIt">брать на редактирование найденный объект</param>
+        /// <returns></returns>
         private ReferenceObject FindMatch(ReferenceObject match, bool editIt)
         {
             var usingAreas = modification.GetObjects(ModificationReferenceObject.RelationKeys.UsingArea);
@@ -152,6 +162,9 @@ namespace ProcessiingContext.Model
             return null;
         }
 
+        /// <summary>
+        /// сохранение изменения и связанных объектов
+        /// </summary>
         private void Save()
         {
             var usingAreas = modification.GetObjects(ModificationReferenceObject.RelationKeys.UsingArea);
@@ -167,12 +180,20 @@ namespace ProcessiingContext.Model
             this.modification.EndUpdate("сохраняем изменение");
         }
 
+        /// <summary>
+        /// обновление подключений в соответствии
+        /// </summary>
+        /// <param name="match">соответствие</param>
+        /// <param name="pairConnections">набор подключений</param>
         private void UpdateMatch(ReferenceObject match, PairConnections pairConnections)
         {
             match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].SetLinkedComplexLink(pairConnections.RemoveLink);
             match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].SetLinkedComplexLink(pairConnections.AddLink);
         }
-
+        /// <summary>
+        /// задать контекст проектирования
+        /// </summary>
+        /// <param name="designContext"></param>
         private void setDesignContext(DesignContextObject designContext)
         {
             this.modification.StartUpdate();

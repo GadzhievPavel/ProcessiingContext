@@ -105,28 +105,6 @@ namespace ProcessiingContext
             });
             return sourceLinks;
         }
-        ///// <summary>
-        ///// Возвращает конфигурацию для просмотра ИИ 
-        ///// </summary>
-        ///// <returns></returns>
-        //public ConfigurationSettings GetConfigModifications()
-        //{
-        //    HashSet<DesignContextObject> designContextObjects = new HashSet<DesignContextObject>();
-        //    foreach( var item in modifications)
-        //    {
-        //        designContextObjects.Add(item.DesignContextObject);
-        //    }
-        //    if (designContextObjects.Count == 1)
-        //    {
-        //        return new ConfigurationSettings(connection)
-        //        {
-        //            DesignContext = designContextObjects.ElementAt(0),
-        //            ApplyDesignContext = true,
-        //            ShowDeletedInDesignContextLinks = true
-        //        };
-        //    }
-        //    return null;
-        //}
 
         /// <summary>
         /// Возвращает конфигурацию для работы с ии в контексте, в котором на текущий момент находятся изменения
