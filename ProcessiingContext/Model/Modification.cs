@@ -152,8 +152,9 @@ namespace ProcessiingContext.Model
                     {
                         if (editIt)
                         {
-                            selectMatch.StartUpdate();
+                            this.modification.StartUpdate();
                             usingArea.StartUpdate();
+                            selectMatch.StartUpdate();
                         }
                         return selectMatch;
                     }
