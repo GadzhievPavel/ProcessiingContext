@@ -67,20 +67,5 @@ namespace ProcessiingContext.Handler
             }
             return stringBuilder.ToString();
         }
-
-        public void MovingToDesignContext(DesignContextObject targetDesignContext)
-        {
-            List<PairConnections> connections = new List<PairConnections>();
-
-            foreach (var modification in notice.Modifications)
-            {
-                modification.ModificationObject.StartUpdate();
-                var pairConnections = modification.MoveToContext(targetDesignContext);
-                modification.Update(targetDesignContext, pairConnections);
-                modification.ModificationObject.StartUpdate();
-            }
-
-            
-        }
     }
 }

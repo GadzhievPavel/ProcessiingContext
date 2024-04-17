@@ -91,46 +91,7 @@ namespace ProcessiingContext.Model
                 }
             }
         }
-        ///// <summary>
-        ///// Перенос измененения и подключения в заданный контекст
-        ///// </summary>
-        ///// <param name="designContext">контекст, в который надо перенести</param>
-        //public void MoveHierarchyLinks(DesignContextObject targetDesignContext)
-        //{
-        //    var config = new ConfigurationSettings(this.serverConnection)
-        //    {
-        //        DesignContext = targetDesignContext,
-        //        ApplyDesignContext = true,
-        //        ShowDeletedInDesignContextLinks = true
-        //    };
-        //    List<PairConnections> connections = new List<PairConnections>();
-        //    foreach (var usingArea in usingAreas)
-        //    {
-        //        usingArea.UsingAreaObject.StartUpdate();
-        //        foreach (var match in usingArea.Matches)
-        //        {
-        //            var newConnections = match.CopyComplexHierarhyLInkInContext(targetDesignContext);
-        //            connections.Add(newConnections);
-        //            //newMatch.UpdateReferenceObject();
-        //            match.DeleteComplexHierarhyLinkInContext(this.DesignContextObject);
-        //            //match.SetLinkConnections(newConnections, config);
-        //        }
-        //        usingArea.UsingAreaObject.EndUpdate("обновление подключений");
-        //    }
 
-        //    using (modification.Reference.ChangeAndHoldConfigurationSettings(config))
-        //    {
-        //        modification.Reference.Refresh();
-        //        modification.Reload();
-        //        foreach (var connection in connections)
-        //        {
-        //            var findedMatch = FindMatch(connection.Match, true);
-        //            UpdateMatch(findedMatch, connection);
-        //        }
-        //        Save();
-        //    }
-        //    setDesignContext(targetDesignContext);
-        //}
 
         /// <summary>
         /// Обновление изменения

@@ -68,26 +68,6 @@ namespace ProcessiingContext.Model
                 this.removeHierarhyLink = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].LinkedComplexLink;
             }
             this.dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
-            //this.match = match;
-            //this.configSettings = configurationSettings;
-            //this.nomenclature = match.GetObject(Guids.NotifyReference.Link.ObjectPDM) as NomenclatureObject;
-            //var srcHierarchyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.SourceHierarchyLink];
-            //using (srcHierarchyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
-            //{
-            //    this.sourceHierarhyLink = srcHierarchyManager.LinkedComplexLink;
-            //}
-            //var addHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink];
-            //using (addHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
-            //{
-            //    this.addHierarhyLink = addHierarhyManager.LinkedComplexLink;
-            //}
-            //var removeHierarhyManager = match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink];
-            //using (removeHierarhyManager.LinkReference.ChangeAndHoldConfigurationSettings(configurationSettings))
-            //{
-            //    this.removeHierarhyLink = removeHierarhyManager.LinkedComplexLink;
-            //}
-            //this.dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
-            //this.connection = connection;
         }
 
         public void DeleteComplexHierarhyLinkInContext(DesignContextObject designContext)
@@ -95,40 +75,6 @@ namespace ProcessiingContext.Model
             IReadOnlyCollection<ComplexHierarchyLink> readonlyCol = dictLinks.Keys;
             designContext.DeleteChangesAsync(readonlyCol);
         }
-
-        /// <summary>
-        /// Копирует подключения в указанный контекст
-        /// </summary>
-        /// <param name="designContext">контекст в который нужно скопировать подключения</param>
-        /// <returns>новое представление соответствий подключений</returns>
-        //public MatchConnection CopyComplexHierarhyLInkInContext(DesignContextObject targetContext)
-        //{
-        //    if (addHierarhyLink != null)
-        //    {
-        //        dictLinks.Add(this.addHierarhyLink, true);
-        //    }
-        //    if (removeHierarhyLink != null)
-        //    {
-        //        dictLinks.Add(this.removeHierarhyLink, true);
-        //    }
-
-        //    targetContext.CopyMoveChangesAsync(dictLinks);
-        //    NomenclatureHandler nomenclatureHandler = new NomenclatureHandler(this.connection);
-        //    var copyAddHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(addHierarhyLink, targetContext);
-        //    var copyRemoveHierarchyLink = nomenclatureHandler.FindComplexHierarhyLink(removeHierarhyLink, targetContext);
-
-        //    var config = new ConfigurationSettings(this.connection)
-        //    {
-        //        DesignContext = targetContext,
-        //        ApplyDesignContext = true,
-        //        ShowDeletedInDesignContextLinks = true
-        //    };
-
-        //    var updateMatch = new MatchConnection(match, config, connection);
-        //    updateMatch.addHierarhyLink = copyAddHierarchyLink;
-        //    updateMatch.removeHierarhyLink = copyRemoveHierarchyLink;
-        //    return updateMatch;
-        //}
 
         public PairConnections CopyComplexHierarhyLInkInContext(DesignContextObject targetContext)
         {
@@ -172,22 +118,6 @@ namespace ProcessiingContext.Model
             }
         }
 
-        public void SetLinkConnections(PairConnections pairConnections, ConfigurationSettings configurationSettings)
-        {
-            //using(match.Reference.ChangeAndHoldConfigurationSettings(configurationSettings))
-            //{
-            match.Reference.Refresh();
-            match.Reload();
-            this.match.StartUpdate();
-            this.match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.AddHierarchyLink].SetLinkedComplexLink(pairConnections.AddLink);
-            match.Reference.Refresh();
-            match.Reload();
-            this.match.Links.ToOneToComplexHierarchy[Guids.NotifyReference.Link.RemoveHierarchyLink].SetLinkedComplexLink(pairConnections.RemoveLink);
-            match.Reference.Refresh();
-            match.Reload();
-            this.match.EndUpdate("обновление подключений");
-            //}
-        }
         public override string ToString()
         {
             var matchStr = match == null ? "null" : match.ToString();
