@@ -92,6 +92,20 @@ namespace ProcessiingContext
         }
 
         /// <summary>
+        /// Перемещение изменения между контекстами
+        /// </summary>
+        /// <param name="targetDesignContext">целевой контекст проектирования</param>
+        public void MoveToContext(DesignContextObject targetDesignContext)
+        {
+            foreach (var item in modifications)
+            {
+                item.ModificationObject.StartUpdate();
+                var pairConnections = item.MoveToContext(targetDesignContext);
+                item.Update(targetDesignContext, pairConnections);
+                item.ModificationObject.EndUpdate($"Завершено перемещение изменения в контекст {targetDesignContext}");
+            }
+        }
+        /// <summary>
         /// Возвращает список исходных подключений
         /// </summary>
         /// <returns></returns>

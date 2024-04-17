@@ -124,16 +124,71 @@ namespace ProcessiingContext.Model
             {
                 modification.Reference.Refresh();
                 modification.Reload();
-                foreach(var connection in connections)
+                foreach (var connection in connections)
                 {
                     var findedMatch = FindMatch(connection.Match, true);
-                    UpdateMatch(findedMatch,connection);
+                    UpdateMatch(findedMatch, connection);
                 }
                 Save();
             }
             setDesignContext(targetDesignContext);
         }
 
+        /// <summary>
+        /// Обновление изменения
+        /// </summary>
+        /// <param name="targetDesignContext"></param>
+        /// <param name="newConnections"></param>
+        public void Update(DesignContextObject targetDesignContext, List<PairConnections> newConnections)
+        {
+            var config = new ConfigurationSettings(this.serverConnection)
+            {
+                DesignContext = targetDesignContext,
+                ApplyDesignContext = true,
+                ShowDeletedInDesignContextLinks = true
+            };
+            using (modification.Reference.ChangeAndHoldConfigurationSettings(config))
+            {
+                modification.Reference.Refresh();
+                modification.Reload();
+                foreach (var connection in newConnections)
+                {
+                    var findedMatch = FindMatch(connection.Match, true);
+                    UpdateMatch(findedMatch, connection);
+                }
+                Save();
+            }
+            setDesignContext(targetDesignContext);
+        }
+        /// <summary>
+        /// Копирует подключения в целевой контекст проектирования, удаляет исзодные подключения из исходного контекста
+        /// </summary>
+        /// <param name="targetDesignContext">целевой контекст</param>
+        /// <returns>набор новых подключений</returns>
+        public List<PairConnections> MoveToContext(DesignContextObject targetDesignContext)
+        {
+            var config = new ConfigurationSettings(this.serverConnection)
+            {
+                DesignContext = targetDesignContext,
+                ApplyDesignContext = true,
+                ShowDeletedInDesignContextLinks = true
+            };
+            List<PairConnections> connections = new List<PairConnections>();
+            foreach (var usingArea in usingAreas)
+            {
+                usingArea.UsingAreaObject.StartUpdate();
+                foreach (var match in usingArea.Matches)
+                {
+                    var newConnections = match.CopyComplexHierarhyLInkInContext(targetDesignContext);
+                    connections.Add(newConnections);
+                    //newMatch.UpdateReferenceObject();
+                    match.DeleteComplexHierarhyLinkInContext(this.DesignContextObject);
+                    //match.SetLinkConnections(newConnections, config);
+                }
+                usingArea.UsingAreaObject.EndUpdate("обновление подключений");
+            }
+            return connections;
+        }
         /// <summary>
         /// Поиск соответствия подключений
         /// </summary>
