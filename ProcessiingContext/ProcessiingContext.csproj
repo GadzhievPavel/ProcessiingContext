@@ -60,6 +60,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="exceptions\ContextMovingException.cs" />
     <Compile Include="Guids.cs" />
     <Compile Include="Handler\FileHandler.cs" />
     <Compile Include="Handler\NomenclatureHandler.cs" />

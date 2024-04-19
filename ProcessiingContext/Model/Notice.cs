@@ -1,4 +1,5 @@
 ﻿using DeveloperUtilsLibrary;
+using ProcessiingContext.exceptions;
 using ProcessiingContext.Model;
 using System;
 using System.Collections.Generic;
@@ -83,6 +84,11 @@ namespace ProcessiingContext
         /// <param name="targetDesignContext">целевой контекст проектирования</param>
         public void MoveToContext(DesignContextObject targetDesignContext)
         {
+            var currentConfig = GetConfigModifications(notice, connection);
+            if (currentConfig.DesignContext.Equals(targetDesignContext))
+            {
+                throw new ContextMovingException($"Изменения уже находятся в контексте {targetDesignContext}");
+            }
             foreach (var item in modifications)
             {
                 item.ModificationObject.StartUpdate();
