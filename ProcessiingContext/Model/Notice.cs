@@ -157,6 +157,81 @@ namespace ProcessiingContext
                 return config;
             }
         }
+        /// <summary>
+        /// Проводит поиск исходных подключений в целевом контексте
+        /// </summary>
+        /// <param name="targetContext">целевой контекст</param>
+        /// <returns>словарь, true - подключение найдено, false - подключение в целевом контексте отсутствует</returns>
+        private Dictionary<ComplexHierarchyLink,Boolean> GetSourceComplexHierarchyLink(DesignContextObject targetContext)
+        {
+            DesignContextsReference designContextsReference = new DesignContextsReference(connection);
+            var designContextObject = designContextsReference.Find("Основной") as DesignContextObject;
+
+            var mainConfig = new ConfigurationSettings(connection)
+            {
+                DesignContext = designContextObject,
+                ApplyDesignContext = true,
+                ShowDeletedInDesignContextLinks = true
+            };
+
+            var noticeInMain = new Notice(this.notice, this.connection, mainConfig);
+            var sourceLinks = noticeInMain.GetAllSourceHierarchyLinks();
+
+            var targetConfig = new ConfigurationSettings(connection)
+            {
+                DesignContext = targetContext,
+                ApplyDesignContext = true,
+                ShowDeletedInDesignContextLinks = true
+            };
+
+            var noticeInTagret = new Notice(this.notice, this.connection, targetConfig);
+
+            Dictionary<ComplexHierarchyLink, Boolean> findedLinks = new Dictionary<ComplexHierarchyLink, bool>();
+            foreach (var link in sourceLinks)
+            {
+                findedLinks.Add(link, false);
+                foreach (var modificationInTarget in noticeInTagret.modifications)
+                {
+                    var findSourceComplexHierarchyLink = modificationInTarget.GetSourceComplexHierarchyLink(link);
+                    if (findSourceComplexHierarchyLink != null)
+                    {
+                        findedLinks[link] = true;
+                    }
+                }
+            }
+
+            return findedLinks;
+        }
+
+        /// <summary>
+        /// Разрешает перенос в целевой контекст, если исходные подключения в нем не изменены
+        /// </summary>
+        /// <param name="targetContext">целевой контекст</param>
+        /// <returns></returns>
+        public bool IsEnableMoveInContext(DesignContextObject targetContext)
+        {
+            var findedLinks = GetSourceComplexHierarchyLink(targetContext);
+            return findedLinks.All(link => link.Value == true);
+        }
+
+        public string GetInfoIsEnableMovingInContext(DesignContextObject targetContext)
+        {
+            var findedLinks = GetSourceComplexHierarchyLink(targetContext);
+            var noFindedLinks = findedLinks.Where(link => link.Value == false).ToList();
+            StringBuilder stringBuilder = new StringBuilder();
+
+            if (!noFindedLinks.Any()) {
+                stringBuilder.AppendLine($"Извещение возможно перенести в контекст проектирования {targetContext}");
+                return stringBuilder.ToString();
+            }
+            foreach (var link in noFindedLinks)
+            {
+                stringBuilder.AppendLine($"В контексте проектирования {targetContext} не было найдено или было изменено подключение между объектом" +
+                    $" {link.Key.ParentObject} и входящей в него {link.Key.ChildObject}");
+                stringBuilder.AppendLine();
+            }
+            return stringBuilder.ToString();
+        }
 
         public override string ToString()
         {

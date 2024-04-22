@@ -177,6 +177,19 @@ namespace ProcessiingContext.Model
             return null;
         }
 
+
+        public ComplexHierarchyLink GetSourceComplexHierarchyLink(ComplexHierarchyLink sourceLink)
+        {
+            foreach(var usingArea in usingAreas)
+            {
+                var findSourceLink = usingArea.GetSourceComplexHierarchyLink(sourceLink);
+                if(findSourceLink != null)
+                {
+                    return findSourceLink;
+                }
+            }
+            return null;
+        }
         /// <summary>
         /// сохранение изменения и связанных объектов
         /// </summary>

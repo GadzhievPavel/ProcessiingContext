@@ -45,6 +45,8 @@ namespace ProcessiingContext.Handler
             using (nomenclatureReference.ChangeAndHoldConfigurationSettings(ConfigurationSettings))
             {
                 nomenclatureReference.Refresh();
+                parent.Reload();
+                children.Reload();
                 var childInOtherContext = nomenclatureReference.Find(children.Id);
                 childInOtherContext.Parents.Reload();
 

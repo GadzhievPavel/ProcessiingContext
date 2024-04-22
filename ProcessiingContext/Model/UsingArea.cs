@@ -61,5 +61,16 @@ namespace ProcessiingContext.Model
             matches.ForEach(x => stringBuilder.Append(x.ToString()).AppendLine());
             return stringBuilder.ToString();
         }
+
+        public ComplexHierarchyLink GetSourceComplexHierarchyLink(ComplexHierarchyLink sourceLink)
+        {
+            foreach(MatchConnection match in matches) {
+                if (match.SourceHierarhyLink.Equals(sourceLink))
+                {
+                    return match.SourceHierarhyLink;
+                }
+            }
+            return null;
+        }
     }
 }
