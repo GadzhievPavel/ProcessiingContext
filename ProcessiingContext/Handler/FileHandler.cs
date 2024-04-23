@@ -14,12 +14,19 @@ namespace ProcessiingContext.Handler
 {
     public class FileHandler
     {
-
-
-
+        /// <summary>
+        /// Создавать новый файл
+        /// </summary>
         private bool isGenerateNewFile;
-
+        /// <summary>
+        /// Справочник файлы
+        /// </summary>
         FileReference fileReference;
+        /// <summary>
+        /// Создаем экземпляр обработчика файлов
+        /// </summary>
+        /// <param name="connection">подключение</param>
+        /// <param name="isGenerateNewFile">генерировать  новый файл</param>
         public FileHandler(ServerConnection connection, bool isGenerateNewFile) {
             this.fileReference = new FileReference(connection)
             {
@@ -93,6 +100,11 @@ namespace ProcessiingContext.Handler
                 throw new MacroException(exceptionMessage, e);
             }
         }
+        /// <summary>
+        /// Вернуть тип файла
+        /// </summary>
+        /// <param name="_extensionDoc">расширение файла</param>
+        /// <returns></returns>
         private FileType GetFileType(String _extensionDoc)
         {
             var fileType = fileReference.Classes.GetFileTypeByExtension(_extensionDoc);
@@ -104,7 +116,14 @@ namespace ProcessiingContext.Handler
 
             return fileType;
         }
-
+        /// <summary>
+        /// Возвращает уникальное имя файла
+        /// </summary>
+        /// <param name="exportedFileName">название файла</param>
+        /// <param name="parentFolder">папка для сохранения отчета</param>
+        /// <param name="fileName">название файла</param>
+        /// <param name="extensionDoc">расширение файла</param>
+        /// <returns></returns>
         private string GetUniqueExportedFileName(string exportedFileName, FolderObject parentFolder, string fileName, string extensionDoc)
         {
             var filesName = parentFolder.Children.AsList
@@ -158,7 +177,12 @@ namespace ProcessiingContext.Handler
 
             File.Delete(path);
         }
-
+        /// <summary>
+        /// Удаление аттрибутов файла
+        /// </summary>
+        /// <param name="attributes"></param>
+        /// <param name="attributesToRemove"></param>
+        /// <returns></returns>
         private FileAttributes RemoveAttribute(FileAttributes attributes, FileAttributes attributesToRemove)
         {
             return attributes & ~attributesToRemove;
