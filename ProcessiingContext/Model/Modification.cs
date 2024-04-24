@@ -177,7 +177,11 @@ namespace ProcessiingContext.Model
             return null;
         }
 
-
+        /// <summary>
+        /// Поиск исходного подключения по имеющемуся подключению
+        /// </summary>
+        /// <param name="sourceLink">подключение</param>
+        /// <returns></returns>
         public ComplexHierarchyLink GetSourceComplexHierarchyLink(ComplexHierarchyLink sourceLink)
         {
             foreach(var usingArea in usingAreas)

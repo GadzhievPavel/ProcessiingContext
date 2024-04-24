@@ -19,12 +19,12 @@ namespace ProcessiingContext.Handler
             this.serverConnection = connection;
         }
 
+
         /// <summary>
-        /// Поиск подключение в ЭСИ на основе родительского и дочернего объекта в определенном контексте
+        /// Поиск подключение в ЭСИ на основе cуществующего подключения в определенном контексте
         /// </summary>
-        /// <param name="parent"></param>
-        /// <param name="children"></param>
-        /// <param name="CurrentDesignContext"></param>
+        /// <param name="complexLink">имеющееся подключение</param>
+        /// <param name="designContext">контекст, в котором будет проводиться поиск</param>
         /// <returns></returns>
         public ComplexHierarchyLink FindComplexHierarhyLink(ComplexHierarchyLink complexLink,  DesignContextObject designContext)
         {

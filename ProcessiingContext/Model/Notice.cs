@@ -213,7 +213,11 @@ namespace ProcessiingContext
             var findedLinks = GetSourceComplexHierarchyLink(targetContext);
             return findedLinks.All(link => link.Value == true);
         }
-
+        /// <summary>
+        /// Возвращает текст о можножности переноса в целевой контекст изменений
+        /// </summary>
+        /// <param name="targetContext">целевой контест</param>
+        /// <returns></returns>
         public string GetInfoIsEnableMovingInContext(DesignContextObject targetContext)
         {
             var findedLinks = GetSourceComplexHierarchyLink(targetContext);

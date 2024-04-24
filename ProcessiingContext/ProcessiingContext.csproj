@@ -70,7 +70,6 @@
     <Compile Include="Model\Notice.cs" />
     <Compile Include="Model\PairConnections.cs" />
     <Compile Include="Model\UsingArea.cs" />
-    <Compile Include="ProcessingNoticeInDesignContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

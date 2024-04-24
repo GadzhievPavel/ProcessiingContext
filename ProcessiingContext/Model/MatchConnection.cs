@@ -70,12 +70,21 @@ namespace ProcessiingContext.Model
             this.dictLinks = new Dictionary<ComplexHierarchyLink, Boolean>();
         }
 
+        /// <summary>
+        /// Удаление подключений в заднном контексте
+        /// </summary>
+        /// <param name="designContext">контекст, в котором будет проводиться удаление подключений</param>
         public void DeleteComplexHierarhyLinkInContext(DesignContextObject designContext)
         {
             IReadOnlyCollection<ComplexHierarchyLink> readonlyCol = dictLinks.Keys;
             designContext.DeleteChangesAsync(readonlyCol);
         }
 
+        /// <summary>
+        /// копирование подключений в целевой контекст
+        /// </summary>
+        /// <param name="targetContext">целевой контекст</param>
+        /// <returns></returns>
         public PairConnections CopyComplexHierarhyLInkInContext(DesignContextObject targetContext)
         {
             if (addHierarhyLink != null)

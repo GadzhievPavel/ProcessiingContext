@@ -62,6 +62,11 @@ namespace ProcessiingContext.Model
             return stringBuilder.ToString();
         }
 
+        /// <summary>
+        /// Поиск исходного подключения по имеющемуся подключению
+        /// </summary>
+        /// <param name="sourceLink">имеющеся подключение</param>
+        /// <returns></returns>
         public ComplexHierarchyLink GetSourceComplexHierarchyLink(ComplexHierarchyLink sourceLink)
         {
             foreach(MatchConnection match in matches) {
