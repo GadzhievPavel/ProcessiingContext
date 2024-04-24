@@ -19,7 +19,7 @@
 
 Подготавливаем изменение состава сборки в контексте Изменения
 
-![img](https://github.com/GadzhievPavel/ProcessiingContext/blob/master/ProcessiingContext/docs/img/sourceAssembly.PNG)
+![img](https://github.com/GadzhievPavel/ProcessiingContext/blob/master/ProcessiingContext/docs/img/makeChange.PNG)
 
 Создаем извещение об изменении. У изменения объект соответствие подключений выглядит следующим образом
 
