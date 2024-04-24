@@ -71,4 +71,4 @@
 </code>
 </pre>
 
-![logo](https://github.com/GadzhievPavel/ProcessiingContext/blob/master/ProcessiingContext/docs/img/A4 - 107.jpg)
+![logo](https://github.com/GadzhievPavel/ProcessiingContext/blob/master/ProcessiingContext/docs/img/A4%20-%20107.jpg)
