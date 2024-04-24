@@ -13,4 +13,4 @@
 Пример задачи решаемой библиотекой **ProcessingContext**
 
 В ЭСИ существует сборка __3434343434 - ffjfjfj - B.1__. Сборка содержит в себе детали и сборочный чертеж
-
+![logo](https://github.com/GadzhievPavel/ProcessiingContext/blob/master/ProcessiingContext/docs/img/sourceAssembly.PNG)
